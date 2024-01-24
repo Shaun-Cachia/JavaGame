@@ -1,3 +1,4 @@
+package JavaGame;
 public class Character {
     int EXP;
     int LV;

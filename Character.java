@@ -1,5 +1,5 @@
 package JavaGame;
-public class Character {
+public abstract class Character {
     int EXP;
     int LV;
     
@@ -84,4 +84,6 @@ public class Character {
     public String toString() {
         return "EXP: "+EXP+"\nLV:"+LV+"\nHP: "+HP+"\nAP: "+AP+"\nPwr: "+Pwr+"\nDef: "+Def+"\nInt: "+Int+"\nAgl: "+Agl+"\nMaster: "+Master;
     }
+    public abstract int attack();
+    public abstract int defend();
 }

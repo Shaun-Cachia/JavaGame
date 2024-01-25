@@ -10,7 +10,6 @@ public class Game {
 
     public static void main(String[] args) {
         int choice;
-        do {
             System.out.println("Welcome to Divine Destiny: The Legend of Isaac");
             System.out.println("1. New Game");
             System.out.println("2. Load Game");
@@ -32,7 +31,7 @@ public class Game {
                     System.out.println("Invalid Choice");
                     break;
             }
-        } while (choice != 3);
+
 
         System.out.println("A young boy, Isaac, abandoned in a world oblivious to his origins,\n" +
                 "was saved by an elderly couple who became the center of his growth.\n" +

@@ -1,2 +1,0 @@
-# JavaGame
-Java Game.

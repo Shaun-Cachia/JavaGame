@@ -59,7 +59,7 @@ public class Game {
                         boolean encounter = shouldFight();
                         if (encounter) {
                             System.out.println("Oh no! You encountered an enemy!");
-                            createRandomEnemy();
+                            battleSystem(characters.get(0), createRandomEnemy());
                             // Additional logic for the fight can be added here
                         } else {
                             System.out.println("You travel peacefully through Zebbug Woods. Nothing happens.");
@@ -230,5 +230,123 @@ public class Game {
             }
         }
         return probabilities.length - 1;
+    }
+
+    private static void battleSystem(Character player, Enemy enemy) {
+        System.out.println("Battle Start!");
+        do {
+            displayBattleOptions();
+            int choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    attack(player, enemy);
+                    break;
+                case 2:
+                    defend(player);
+                    break;
+                case 3:
+                    useItem(player);
+                    break;
+                case 4:
+                    useAbility(player);
+                    break;
+                case 5:
+                    examine(player, enemy);
+                    break;
+                case 6:
+                    flee(player, enemy);
+                    break;
+                default:
+                    System.out.println("Invalid Choice");
+            }
+
+            // Enemy's turn
+            enemyAttack(player, enemy);
+
+        } while (player.isAlive() && enemy.isAlive());
+
+        if (player.isAlive()) {
+            System.out.println("You defeated the enemy!");
+            // Handle experience and level up logic here
+        } else {
+            System.out.println("You were defeated. Reloading from the last save...");
+            // Reload last save
+            loadGame();
+        }
+    }
+
+    private static void displayBattleOptions() {
+        System.out.println("Choose an action:");
+        System.out.println("1. Attack");
+        System.out.println("2. Defend");
+        System.out.println("3. Use Item");
+        System.out.println("4. Abilities");
+        System.out.println("5. Examine");
+        System.out.println("6. Flee");
+    }
+
+    private static void attack(Character player, Enemy enemy) {
+        // Implement attack logic based on player's stats
+        int damage = player.getAttackDamage();
+        enemy.takeDamage(damage);
+        System.out.println("You dealt " + damage + " damage to the enemy!");
+    }
+
+    private static void defend(Character player) {
+        // Implement defend logic based on player's stats
+        int defense = player.getDef();
+        System.out.println("You chose to defend. Increased defense by " + defense + ".");
+    }
+
+    private static void useItem(Character player) {
+        // Implement logic to use items
+        // For simplicity, you can assume the player has a healing item
+        // Replace this with your actual item usage logic
+        int healAmount = 10;
+        player.heal(healAmount);
+        System.out.println("You used a healing item. Restored " + healAmount + " HP.");
+    }
+
+    private static void useAbility(Character player) {
+        // Implement logic to use abilities
+        // Abilities may consume player's AP and deal damage based on Int stat
+        // You can add more complexity to this based on your game design
+        int abilityDamage = player.getInt();
+        int apCost = 5; // Example AP cost
+        if (player.getAP() >= apCost) {
+            player.decreaseAP(apCost);
+            System.out.println("You used an ability and dealt " + abilityDamage + " damage to the enemy!");
+        } else {
+            System.out.println("Not enough AP to use the ability.");
+        }
+    }
+
+    private static void examine(Character player, Enemy enemy) {
+        // Implement logic to examine the enemy
+        // For simplicity, let's assume the player always learns a new ability
+        Ability newAbility = new Ability("Fireball", 10, 5); // Example new ability with base damage 10 and AP cost 5
+        player.addAbility(newAbility);
+        System.out.println("You examined the enemy and learned a new ability: " + newAbility.getName() + "!");
+    }
+
+    private static void flee(Character player, Enemy enemy) {
+        // Implement logic to flee from battle
+        // Success depends on player's agility
+        int fleeChance = player.getAgl() * 5; // Example: 5% per agility point
+        if (random.nextInt(100) < fleeChance) {
+            System.out.println("You successfully fled from the battle!");
+            // Additional logic after successful flee
+        } else {
+            System.out.println("You failed to flee. The enemy attacks!");
+            // Additional logic if flee fails
+            enemyAttack(player, enemy);
+        }
+    }
+
+    private static void enemyAttack(Character player, Enemy enemy) {
+        // Implement logic for the enemy's attack
+        int damage = enemy.getAttackDamage();
+        player.takeDamage(damage);
+        System.out.println("The enemy dealt " + damage + " damage to you!");
     }
 }

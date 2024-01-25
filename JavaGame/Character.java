@@ -21,7 +21,9 @@ public class Character { //All Status of Characters
 
     String Master;
 
-    public Character(String Name, int EXP, int LV, int HP, int AP, int Pwr, int Def, int Int, int Agl, String status, String Master) {
+    int maxHP = LV * 7;
+
+    public Character(String Name, int EXP, int LV, int HP, int AP, int Pwr, int Def, int Int, int Agl, String status, String Master, int maxHP) {
         this.Name = Name;
         this.EXP = EXP;
         this.LV = LV;
@@ -37,6 +39,8 @@ public class Character { //All Status of Characters
         this.status = status;
 
         this.Master = Master;
+
+        this.maxHP = maxHP;
 
     }
     public ArrayList<Ability> getAbilities() {
@@ -104,14 +108,17 @@ public class Character { //All Status of Characters
     }
     public int getMaxHP() {
         // You can add more complex logic based on your game design
-        return LV * 7; // Example: Maximum HP is 7 times the character's level
+        return maxHP; // Example: Maximum HP is 7 times the character's level
     }
         
 
     public void addAbility(Ability ability) {
         abilities.add(ability);
     }
-    
+    public void restoreHPToMax() {
+        this.HP = this.maxHP;
+    }
+
     public void setName(String Name) {
         this.Name = Name;
     }

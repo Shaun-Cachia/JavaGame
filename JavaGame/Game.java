@@ -7,6 +7,7 @@ public class Game {
     static Scanner sc = new Scanner(System.in);
     static Random random = new Random();
     static boolean unlockedZebbugTown = false;
+    static Character player;
 
     public static void main(String[] args) {
         int choice;
@@ -80,8 +81,8 @@ public class Game {
                 case 2:
                     System.out.println("You decide to camp.");
                     // Restore player's HP to max
-                    // Replace the following line with your actual code to restore HP
-                    System.out.println("Your HP is restored to max.");
+                    player.restoreHPToMax();
+                    System.out.println("Your HP is restored to max. Current HP: " + player.getHP() + "/" + player.getMaxHP());
                     break;
 
                 case 3:
@@ -145,7 +146,7 @@ public class Game {
         }
 
         // Create the character
-        Character newCharacter = new Character(characterName, 0, 1, 10, 5, 5, 5, 5, 5, "Healthy", "None");
+        Character newCharacter = new Character(characterName, 0, 1, 15, 5, 9, 4, 4, 7, "Healthy", "None", 15);
         characters.add(newCharacter);
 
         System.out.println("Character created:");
@@ -170,11 +171,11 @@ public class Game {
         // Based on the selected index, create and return the corresponding enemy
         switch (enemyTypes[index]) {
             case "goo":
-                return new Enemy("Goo", 2, 0, 12, 0, 3, 7, 0, 4, null, null, hasRedJellyDrop(), 0);
+                return new Enemy("Goo", 2, 0, 12, 0, 2, 7, 0, 4, null, null, 12, hasRedJellyDrop(), 0);
             case "goblin":
-                return new Enemy("Mage Goo", 6, 0, 16, 3, 2, 7, 15, 4, null, null, hasBlueJellyDrop(), 6);
+                return new Enemy("Mage Goo", 6, 0, 16, 3, 2, 7, 15, 4, null, null, 16, hasBlueJellyDrop(), 6);
             case "mage goo":
-                return new Enemy("Goblin", 1, 0, 6, 0, 1, 4, 0, 1, null, null, hasGoldPouchDrop(), 1);
+                return new Enemy("Goblin", 1, 0, 6, 0, 1, 4, 0, 1, null, null, 6, hasGoldPouchDrop(), 1);
             default:
                 return null;
         }
@@ -234,6 +235,11 @@ public class Game {
 
     private static void battleSystem(Character player, Enemy enemy) {
         System.out.println("Battle Start!");
+    
+        // Print initial player and enemy information
+        System.out.println("Player: " + player.getName() + " | HP: " + player.getHP() + " | AP: " + player.getAP());
+        System.out.println("Enemy: " + enemy.getName() + " | HP: " + enemy.getHP());
+    
         do {
             displayBattleOptions();
             int choice = sc.nextInt();
@@ -259,12 +265,16 @@ public class Game {
                 default:
                     System.out.println("Invalid Choice");
             }
-
+    
             // Enemy's turn
             enemyAttack(player, enemy);
-
+    
+            // Print updated player and enemy information after each turn
+            System.out.println("Player: " + player.getName() + " | HP: " + player.getHP() + " | AP: " + player.getAP());
+            System.out.println("Enemy: " + enemy.getName() + " | HP: " + enemy.getHP());
+    
         } while (player.isAlive() && enemy.isAlive());
-
+    
         if (player.isAlive()) {
             System.out.println("You defeated the enemy!");
             // Handle experience and level up logic here
@@ -274,6 +284,7 @@ public class Game {
             loadGame();
         }
     }
+    
 
     private static void displayBattleOptions() {
         System.out.println("Choose an action:");

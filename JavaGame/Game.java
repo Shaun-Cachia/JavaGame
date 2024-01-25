@@ -60,7 +60,7 @@ public class Game {
                         boolean encounter = shouldFight();
                         if (encounter) {
                             System.out.println("Oh no! You encountered an enemy!");
-                            Enemy enemy = createRandomEnemy();
+                            createRandomEnemy();
                             // Additional logic for the fight can be added here
                         } else {
                             System.out.println("You travel peacefully through Zebbug Woods. Nothing happens.");
@@ -171,7 +171,7 @@ public class Game {
         // Based on the selected index, create and return the corresponding enemy
         switch (enemyTypes[index]) {
             case "goo":
-                return new Enemy("Goo", 2, 0, 12, 0, 3, 7, 0, 4, null, null, hasRedJellyDrop(), 2);
+                return new Enemy("Goo", 2, 0, 12, 0, 3, 7, 0, 4, null, null, hasRedJellyDrop(), 0);
             case "goblin":
                 return new Enemy("Mage Goo", 6, 0, 16, 3, 2, 7, 15, 4, null, null, hasBlueJellyDrop(), 6);
             case "mage goo":

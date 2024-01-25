@@ -1,8 +1,9 @@
 package JavaGame;
-public class Character {
+public class Character { //All Status of Characters
+    String Name;
     int EXP;
     int LV;
-    
+
     int HP;
     int AP;
 
@@ -11,9 +12,16 @@ public class Character {
     int Int;
     int Agl;
 
+
+    int gold;
+    String item;
+
+    String status;
+
     String Master;
 
-    public Character(int EXP, int LV, int HP, int AP, int Pwr, int Def, int Int, int Agl, String Master) {
+    public Character(String Name, int EXP, int LV, int HP, int AP, int Pwr, int Def, int Int, int Agl, String status, String Master, int gold, String item ) {
+        this.Name = Name;
         this.EXP = EXP;
         this.LV = LV;
 
@@ -25,9 +33,17 @@ public class Character {
         this.Int = Int;
         this.Agl = Agl;
 
+        this.gold = gold;
+        this.item = item;
+
+        this.status = status;
+
         this.Master = Master;
     }
 
+    public String getName() {
+        return Name;
+    }
     public int getEXP() {
         return EXP;
     }
@@ -52,36 +68,57 @@ public class Character {
     public int getAgl() {
         return Agl;
     }
+    public int getGold() {
+        return gold;
+    }
+    public String getItem() {
+        return item;
+    }
+    public String getStatus() {
+        return status;
+    }
     public String getMaster() {
         return Master;
     }
 
-    public void setEXP() {
+    public void setName(String Name) {
+        this.Name = Name;
+    }
+    public void setEXP(int EXP) {
         this.EXP = EXP;
     }
-    public void setLV() {
+    public void setLV(int LV) {
         this.LV = LV;
     }
-    public void setHP() {
+    public void setHP(int HP) {
         this.HP = HP;
     }
-    public void setAP() {
+    public void setAP(int AP) {
         this.AP = AP;
     }
-    public void setPwr() {
+    public void setPwr(int Pwr) {
         this.Pwr = Pwr;
     }
-    public void setDef() {
+    public void setDef(int Def) {
         this.Def = Def;
     }
-    public void setAgl() {
+    public void setAgl(int Agl) {
         this.Agl = Agl;
     }
-    public void setMaster() {
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+    public void setItem(String item) {
+        this.item = item;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+}
+    public void setMaster(String Master) {
         this.Master = Master;
     }
 
     public String toString() {
-        return "EXP: "+EXP+"\nLV:"+LV+"\nHP: "+HP+"\nAP: "+AP+"\nPwr: "+Pwr+"\nDef: "+Def+"\nInt: "+Int+"\nAgl: "+Agl+"\nMaster: "+Master;
+        return "Name: "+Name+"\nEXP: "+EXP+"\nLV:"+LV+"\nHP: "+HP+"\nAP: "+AP+"\nPwr: "+Pwr+"\nDef: "+Def+"\nInt: "+Int+"\nAgl: "+Agl+"\nGold: "+gold+"\nItems: "+item+"\nStatus: "+status+"\nMaster: "+Master;
     }
 }

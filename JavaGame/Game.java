@@ -7,7 +7,6 @@ public class Game {
     static Scanner sc = new Scanner(System.in);
     static Random random = new Random();
     static boolean unlockedZebbugTown = false;
-    static Character player;
 
     public static void main(String[] args) {
         int choice;
@@ -33,6 +32,7 @@ public class Game {
                     break;
             }
 
+            
 
         System.out.println("A young boy, Isaac, abandoned in a world oblivious to his origins,\n" +
                 "was saved by an elderly couple who became the center of his growth.\n" +
@@ -43,46 +43,19 @@ public class Game {
 
         createCharacter();
         System.out.println("You are in Zebbug woods.");
-
-        boolean travelZebbugWoods = false;
-
-        int travels = 0;  // Variable to track the number of travels
+        
+        Character player = characters.get(0);
 
         do {
             displayWorldActions();
             choice = sc.nextInt();
             switch (choice) {
-                case 1: travelZebbugWoods = true;
-                    if (travelZebbugWoods) {
-                        System.out.println("You decide to travel through Zebbug Woods.");
-
-                        // Introduce a random chance for an encounter
-                        boolean encounter = shouldFight();
-                        if (encounter) {
-                            System.out.println("Oh no! You encountered an enemy!");
-                            battleSystem(characters.get(0), createRandomEnemy());
-                            // Additional logic for the fight can be added here
-                        } else {
-                            System.out.println("You travel peacefully through Zebbug Woods. Nothing happens.");
-                            travels++;
-
-                            // Check if Zebbug Town is unlocked after 15 travels
-                            if (travels == 15) {
-                                System.out.println("Congratulations! Zebbug Town is now unlocked.");
-                                unlockedZebbugTown = true;
-                                // Additional logic for unlocking Zebbug Town can be added here
-                            }
-                        }
-                    } else {
-                        System.out.println("You cannot travel at the moment.");
-                    }
+                case 1: travel(player, "Zebbug Woods");
+                        
                     break;
 
                 case 2:
-                    System.out.println("You decide to camp.");
-                    // Restore player's HP to max
-                    player.restoreHPToMax();
-                    System.out.println("Your HP is restored to max. Current HP: " + player.getHP() + "/" + player.getMaxHP());
+                    camp(player);
                     break;
 
                 case 3:
@@ -137,6 +110,22 @@ public class Game {
         }
     }
 
+    private static void saveGame() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("savedata.txt"))) {
+            // Save each character's data
+            for (Character character : characters) {
+                writer.println(character.toString());
+            }
+            // Add additional data to save as needed
+    
+            System.out.println("Game saved successfully.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the game.");
+            e.printStackTrace();
+        }
+    }
+    
+
     private static void createCharacter() {
         // Ask the user for the character's name
         System.out.println("Enter the character's name (default is Isaac): ");
@@ -171,7 +160,7 @@ public class Game {
         // Based on the selected index, create and return the corresponding enemy
         switch (enemyTypes[index]) {
             case "goo":
-                return new Enemy("Goo", 2, 0, 12, 0, 2, 7, 0, 4, null, null, 12, hasRedJellyDrop(), 0);
+                return new Enemy("Goo", 2, 0, 12, 0, 2, 7, 0, 4, null, null, 12, hasRedJellyDrop(), 2);
             case "goblin":
                 return new Enemy("Mage Goo", 6, 0, 16, 3, 2, 7, 15, 4, null, null, 16, hasBlueJellyDrop(), 6);
             case "mage goo":
@@ -237,47 +226,73 @@ public class Game {
         System.out.println("Battle Start!");
     
         // Print initial player and enemy information
-        System.out.println("Player: " + player.getName() + " | HP: " + player.getHP() + " | AP: " + player.getAP());
+        System.out.println("Player: " + player.getName() + " | LV: " + player.getLV() + " | HP: " + player.getHP() + " | AP: " + player.getAP());
         System.out.println("Enemy: " + enemy.getName() + " | HP: " + enemy.getHP());
     
+        boolean playerTurn = true; // Start with the player's turn
+    
         do {
-            displayBattleOptions();
-            int choice = sc.nextInt();
-            switch (choice) {
-                case 1:
-                    attack(player, enemy);
-                    break;
-                case 2:
-                    defend(player);
-                    break;
-                case 3:
-                    useItem(player);
-                    break;
-                case 4:
-                    useAbility(player);
-                    break;
-                case 5:
-                    examine(player, enemy);
-                    break;
-                case 6:
-                    flee(player, enemy);
-                    break;
-                default:
-                    System.out.println("Invalid Choice");
+            if (playerTurn) {
+                // Player's turn
+                displayBattleOptions();
+                int choice = sc.nextInt();
+                switch (choice) {
+                    case 1:
+                        attack(player, enemy);
+                        break;
+                    case 2:
+                        defend(player);
+                        break;
+                    case 3:
+                        useItem(player);
+                        break;
+                    case 4:
+                        useAbility(player);
+                        break;
+                    case 5:
+                        examine(player, enemy);
+                        break;
+                    case 6:
+                        flee(player, enemy);
+                        break;
+                    default:
+                        System.out.println("Invalid Choice");
+                }
+            } else {
+                // Enemy's turn
+                enemyTurn(player, enemy);
             }
     
-            // Enemy's turn
-            enemyAttack(player, enemy);
+            // Toggle turn
+            playerTurn = !playerTurn;
     
             // Print updated player and enemy information after each turn
-            System.out.println("Player: " + player.getName() + " | HP: " + player.getHP() + " | AP: " + player.getAP());
+            System.out.println("Player: " + player.getName() + " | LV: " + player.getLV() + " | HP: " + player.getHP() + " | AP: " + player.getAP());
             System.out.println("Enemy: " + enemy.getName() + " | HP: " + enemy.getHP());
     
         } while (player.isAlive() && enemy.isAlive());
-    
+
         if (player.isAlive()) {
             System.out.println("You defeated the enemy!");
-            // Handle experience and level up logic here
+    
+            // Award experience points
+            int earnedExp = enemy.getEXP();
+            System.out.println("You earned " + earnedExp + " EXP!");
+            player.gainExp(earnedExp);
+    
+            // Award gold
+            int goldDrop = enemy.getGoldDrop();
+            System.out.println("You found " + goldDrop + " gold!");
+            player.gainGold(goldDrop);
+    
+            // Check for level up and display an experience bar
+            if (player.shouldLVUP()) {
+                System.out.println("Congratulations! You leveled up to LV " + player.getLV() + "!");
+            } else {
+                // Display the experience bar
+                displayExpBar(player);
+            }
+    
         } else {
             System.out.println("You were defeated. Reloading from the last save...");
             // Reload last save
@@ -335,7 +350,7 @@ public class Game {
     private static void examine(Character player, Enemy enemy) {
         // Implement logic to examine the enemy
         // For simplicity, let's assume the player always learns a new ability
-        Ability newAbility = new Ability("Fireball", 10, 5); // Example new ability with base damage 10 and AP cost 5
+        Ability newAbility = new Ability("Hadoken", 10, 1); // Example new ability with base damage 10 and AP cost 5
         player.addAbility(newAbility);
         System.out.println("You examined the enemy and learned a new ability: " + newAbility.getName() + "!");
     }
@@ -350,14 +365,89 @@ public class Game {
         } else {
             System.out.println("You failed to flee. The enemy attacks!");
             // Additional logic if flee fails
-            enemyAttack(player, enemy);
+            enemyTurn(player, enemy);
         }
     }
 
-    private static void enemyAttack(Character player, Enemy enemy) {
-        // Implement logic for the enemy's attack
-        int damage = enemy.getAttackDamage();
-        player.takeDamage(damage);
-        System.out.println("The enemy dealt " + damage + " damage to you!");
+    private static void enemyTurn(Character player, Enemy enemy) {
+        // Implement logic for the enemy's turn
+        System.out.println("Enemy's Turn:");
+    
+        boolean useAbility = random.nextBoolean();
+    
+        if (useAbility && !enemy.getAbilities().isEmpty()) {
+            // Randomly select an ability from the enemy's list
+            Ability enemyAbility = enemy.getAbilities().get(random.nextInt(enemy.getAbilities().size()));
+    
+            // Calculate damage based on the enemy's intelligence
+            int damage = enemyAbility.calculateDamage(enemy.getInt());
+    
+            // Display the ability used and the damage dealt
+            System.out.println(enemy.getName() + " used " + enemyAbility.getName() + " and dealt " + damage + " damage to you!");
+    
+            // Apply damage to the player
+            player.takeDamage(damage);
+        } else {
+            // Perform a normal attack
+            int damage = enemy.performNormalAttack();
+            System.out.println(enemy.getName() + " performed a normal attack and dealt " + damage + " damage to you!");
+    
+            // Apply damage to the player
+            player.takeDamage(damage);
+        }
     }
+
+    private static void camp(Character player) {
+        System.out.println("You decide to camp.");
+    
+        // Restore player's HP to max
+        player.restoreHPToMax();
+        System.out.println("Your HP is restored to max. Current HP: " + player.getHP() + "/" + player.getMaxHP());
+    
+        // Ask the player if they want to save the game
+        System.out.println("Do you want to save the game? (1. Yes / 2. No)");
+        int saveChoice = sc.nextInt();
+    
+        if (saveChoice == 1) {
+            saveGame();
+            System.out.println("Game saved successfully.");
+        } else {
+            System.out.println("Game not saved. Continue your journey!");
+        }
+    }
+    
+    private static void travel(Character player, String locationName) {
+        System.out.println("You decide to travel through " + locationName + ".");
+    
+        // Introduce a random chance for an encounter
+        boolean encounter = shouldFight();
+        if (encounter) {
+            System.out.println("Oh no! You encountered an enemy!");
+            battleSystem(player, createRandomEnemy());
+            // Additional logic for the fight can be added here
+        } else {
+            System.out.println("You travel peacefully through " + locationName + ". Nothing happens.");
+            // Increment the travels variable after a successful travel
+        }
+    }
+
+    private static void displayExpBar(Character player) {
+        int EXP = player.getEXP();
+        int EXPLVUP = player.getEXPLVUP();
+        int expBarLength = 20; // Adjust the length of the experience bar
+    
+        int filledBarLength = (int) ((double) EXP / EXPLVUP * expBarLength);
+        int remainingBarLength = expBarLength - filledBarLength;
+    
+        System.out.print("EXP: [");
+        for (int i = 0; i < filledBarLength; i++) {
+            System.out.print("#");
+        }
+        for (int i = 0; i < remainingBarLength; i++) {
+            System.out.print("-");
+        }
+        System.out.println("] " + EXP + "/" + EXPLVUP);
+    }
+
+
 }

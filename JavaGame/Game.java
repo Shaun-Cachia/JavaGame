@@ -20,6 +20,7 @@ public class Game {
             switch (choice) {
                 case 1:
                     createGame();
+                    
                     break;
                 case 2:
                     loadGame();
@@ -32,17 +33,9 @@ public class Game {
                     break;
             }
 
+            sc.nextLine();
             
-
-        System.out.println("A young boy, Isaac, abandoned in a world oblivious to his origins,\n" +
-                "was saved by an elderly couple who became the center of his growth.\n" +
-                "Unfolding across the world are those who still recognize the power of his lineage.\n" +
-                "Their actions set in motion events that will ultimately reshape the world.\n" +
-                "As the boy matures, he aspires to emulate the strength of his guardian grandfather\n" +
-                "and embark on a journey to discover his purpose and find God.");
-
-        createCharacter();
-        System.out.println("You are in Zebbug woods.");
+        
         
         Character player = characters.get(0);
 
@@ -70,6 +63,15 @@ public class Game {
 
                 // Additional cases can be added for other actions
                 case 0:
+                    System.out.println("Do you want to save the game before exiting? (1. Yes / 2. No)");
+                    int saveChoice = sc.nextInt();
+                    if (saveChoice == 1) {
+                    saveGame();
+                    System.out.println("Game saved successfully.");
+                    } else {
+                    System.out.println("Game not saved.");
+                    }   
+                    
                     System.out.println("Exiting...");
                     break;
 
@@ -85,7 +87,17 @@ public class Game {
             File saveData = new File("savedata.txt");
             if (saveData.createNewFile()) {
                 System.out.println("Save created: " + saveData.getName());
-                // Add code to create characters or initialize game state
+                
+                createCharacter();
+                    System.out.println("A young boy, Isaac, abandoned in a world oblivious to his origins,\n" +
+                    "was saved by an elderly couple who became the center of his growth.\n" +
+                    "Unfolding across the world are those who still recognize the power of his lineage.\n" +
+                    "Their actions set in motion events that will ultimately reshape the world.\n" +
+                    "As the boy matures, he aspires to emulate the strength of his guardian grandfather\n" +
+                    "and embark on a journey to discover his purpose and find God.");
+            
+        
+                    System.out.println("You are in Zebbug woods.");
             } else {
                 System.out.println("Save already exists.");
             }
@@ -99,6 +111,13 @@ public class Game {
         try {
             File saveData = new File("savedata.txt");
             Scanner fileScanner = new Scanner(saveData);
+            
+            // Check if there is no data to load
+            if (!fileScanner.hasNextLine()) {
+                System.out.println("No save data found.");
+
+            }
+    
             while (fileScanner.hasNextLine()) {
                 String data = fileScanner.nextLine();
                 System.out.println(data);
@@ -129,7 +148,7 @@ public class Game {
     private static void createCharacter() {
         // Ask the user for the character's name
         System.out.println("Enter the character's name (default is Isaac): ");
-        String characterName = sc.next();
+        String characterName = sc.nextLine();
         if (characterName.isEmpty()) {
             characterName = "Isaac";
         }
@@ -138,7 +157,7 @@ public class Game {
         Character newCharacter = new Character(characterName, 0, 1, 15, 5, 9, 4, 4, 7, "Healthy", "None", 15);
         characters.add(newCharacter);
 
-        System.out.println("Character created:");
+        System.out.println("Character created");
         System.out.println("Name: " + characterName);
         // Add additional character information as needed
     }
@@ -153,18 +172,24 @@ public class Game {
         // Define enemy types and their probabilities
         String[] enemyTypes = {"goo", "goblin", "mage goo"};
         int[] probabilities = {40, 40, 20}; // Out of 100
-
+    
         // Randomly select an enemy type based on probabilities
         int index = selectRandomIndex(probabilities);
-
+    
         // Based on the selected index, create and return the corresponding enemy
         switch (enemyTypes[index]) {
             case "goo":
                 return new Enemy("Goo", 2, 0, 12, 0, 2, 7, 0, 4, null, null, 12, hasRedJellyDrop(), 2);
             case "goblin":
-                return new Enemy("Mage Goo", 6, 0, 16, 3, 2, 7, 15, 4, null, null, 16, hasBlueJellyDrop(), 6);
-            case "mage goo":
                 return new Enemy("Goblin", 1, 0, 6, 0, 1, 4, 0, 1, null, null, 6, hasGoldPouchDrop(), 1);
+            case "mage goo":
+                Enemy mageGoo = new Enemy("Mage Goo", 6, 0, 16, 3, 2, 7, 15, 4, null, null, 16, hasBlueJellyDrop(), 6);
+                
+                // Add abilities to the Mage Goo
+                Ability hadoken = new Ability("Hadoken", 5, 1); // Adjust AP cost based on your design
+                mageGoo.addAbility(hadoken);
+    
+                return mageGoo;
             default:
                 return null;
         }
@@ -244,10 +269,18 @@ public class Game {
                         defend(player);
                         break;
                     case 3:
-                        useItem(player);
+                        if (player.hasItems()) {
+                            useItem(player);
+                        } else {
+                            System.out.println("You don't have any items to use.");
+                        }
                         break;
                     case 4:
-                        useAbility(player);
+                        if (player.hasAbilities()) {
+                            useAbility(player);
+                        } else {
+                            System.out.println("You don't have any abilities to use.");
+                        }
                         break;
                     case 5:
                         examine(player, enemy);
@@ -370,10 +403,9 @@ public class Game {
     }
 
     private static void enemyTurn(Character player, Enemy enemy) {
-        // Implement logic for the enemy's turn
         System.out.println("Enemy's Turn:");
     
-        boolean useAbility = random.nextBoolean();
+        boolean useAbility = random.nextDouble() < 0.75;
     
         if (useAbility && !enemy.getAbilities().isEmpty()) {
             // Randomly select an ability from the enemy's list
@@ -396,6 +428,9 @@ public class Game {
             player.takeDamage(damage);
         }
     }
+    
+
+    
 
     private static void camp(Character player) {
         System.out.println("You decide to camp.");

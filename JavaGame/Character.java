@@ -1,9 +1,10 @@
 package JavaGame;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Character { //All Status of Characters
     private ArrayList<Ability> abilities = new ArrayList<>();
+    private ArrayList<Item> items;
 
     String Name;
     int EXP;
@@ -44,9 +45,21 @@ public class Character { //All Status of Characters
 
         this.maxHP = maxHP;
 
+        this.items = new ArrayList<>();
+        this.abilities = new ArrayList<>();
+
     }
     public ArrayList<Ability> getAbilities() {
         return abilities;
+    }
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+    public boolean hasItems() {
+        return !items.isEmpty();
+    }
+    public boolean hasAbilities() {
+        return !abilities.isEmpty();
     }
 
     public String getName() {

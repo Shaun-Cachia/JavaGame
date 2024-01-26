@@ -10,10 +10,12 @@ public class Enemy extends Character{
         super(Name, EXP, LV, HP, AP, Pwr, Def, Int, Agl, status, Master, maxHP);
         this.abilities = new ArrayList<>();
     
-        this.abilities.add(new Ability("Hadoken", 5, 1));
-    
         this.itemDrop = itemDrop;
         this.goldDrop = goldDrop;
+
+        if (Name.equals("Mage Goo")) {
+            this.abilities.add(new Ability("Hadoken", 5, 1));
+        }
     }
     
     public List<Ability> getEnemyAbilities() {

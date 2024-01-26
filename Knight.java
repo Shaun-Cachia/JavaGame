@@ -6,4 +6,14 @@ public class Knight extends Character{
     public String toString() {
         return "EXP: "+getEXP()+"\nLV:"+getLV()+"\nHP: "+getHP()+"\nAP: "+getAP()+"\nPwr: "+getPwr()+"\nDef: "+getDef()+"\nInt: "+getInt()+"\nAgl: "+getAgl()+"\nMaster: "+getMaster();
     }
+    @Override
+    public int attack() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'attack'");
+    }
+    @Override
+    public int defend() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'defend'");
+    }
 }

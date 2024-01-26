@@ -68,8 +68,11 @@ public abstract class Character {
     public void setAP() {
         this.AP = AP;
     }
-    public void setPwr() {
-        this.Pwr = Pwr;
+    /**
+     * @param i
+     */
+    public void setPwr(int i) {
+        i;
     }
     public void setDef() {
         this.Def = Def;

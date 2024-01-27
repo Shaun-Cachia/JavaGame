@@ -34,7 +34,18 @@ public class Game {
             }
 
             sc.nextLine();
+            //a
+            //IMPORTANT NOTE FIGURE OUT HOW TO MAKE IT MAKE SENSE DAMMIT1!!
+            createCharacter();
+                    System.out.println("A young boy, Isaac, abandoned in a world oblivious to his origins,\n" +
+                    "was saved by an elderly couple who became the center of his growth.\n" +
+                    "Unfolding across the world are those who still recognize the power of his lineage.\n" +
+                    "Their actions set in motion events that will ultimately reshape the world.\n" +
+                    "As the boy matures, he aspires to emulate the strength of his guardian grandfather\n" +
+                    "and embark on a journey to discover his purpose and find God.");
             
+        
+                    System.out.println("You are in Zebbug woods.");
         
         
         Character player = characters.get(0);
@@ -88,16 +99,7 @@ public class Game {
             if (saveData.createNewFile()) {
                 System.out.println("Save created: " + saveData.getName());
                 
-                createCharacter();
-                    System.out.println("A young boy, Isaac, abandoned in a world oblivious to his origins,\n" +
-                    "was saved by an elderly couple who became the center of his growth.\n" +
-                    "Unfolding across the world are those who still recognize the power of his lineage.\n" +
-                    "Their actions set in motion events that will ultimately reshape the world.\n" +
-                    "As the boy matures, he aspires to emulate the strength of his guardian grandfather\n" +
-                    "and embark on a journey to discover his purpose and find God.");
-            
-        
-                    System.out.println("You are in Zebbug woods.");
+                
             } else {
                 System.out.println("Save already exists.");
             }

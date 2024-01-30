@@ -20,7 +20,7 @@ public class Game {
             switch (choice) {
                 case 1:
                     createGame();
-                    
+                    createCharacter();
                     break;
                 case 2:
                     loadGame();
@@ -36,7 +36,6 @@ public class Game {
             sc.nextLine();
             //a
             //IMPORTANT NOTE FIGURE OUT HOW TO MAKE IT MAKE SENSE DAMMIT1!!
-            createCharacter();
                     System.out.println("A young boy, Isaac, abandoned in a world oblivious to his origins,\n" +
                     "was saved by an elderly couple who became the center of his growth.\n" +
                     "Unfolding across the world are those who still recognize the power of his lineage.\n" +
@@ -485,6 +484,4 @@ public class Game {
         }
         System.out.println("] " + EXP + "/" + EXPLVUP);
     }
-
-
 }
